@@ -9,6 +9,7 @@ from keras.layers.normalization import BatchNormalization
 from keras.models import Model
 from keras.layers.wrappers import TimeDistributed
 from keras.optimizers import Adam
+from keras.utils import plot_model
 import keras
 keras.backend.set_image_data_format('channels_first')
 from IPython import embed
@@ -28,6 +29,7 @@ def get_model(data_in, data_out, dropout_rate, nb_cnn2d_filt, pool_size,
     spec_cnn = Permute((2, 1, 3))(spec_cnn)
 
     spec_rnn = Reshape((data_in[-2], -1))(spec_cnn)
+    doa = spec_rnn
     for nb_rnn_filt in rnn_size:
         spec_rnn = Bidirectional(
             GRU(nb_rnn_filt, activation='tanh', dropout=dropout_rate, recurrent_dropout=dropout_rate,
@@ -35,9 +37,10 @@ def get_model(data_in, data_out, dropout_rate, nb_cnn2d_filt, pool_size,
             merge_mode='mul'
         )(spec_rnn)
 
-    doa = spec_rnn
+
+    #sop1hc: doa = spec_rnn
     for nb_fnn_filt in fnn_size:
-        doa = TimeDistributed(Dense(nb_fnn_filt))(doa)
+        #sop1hc: doa = TimeDistributed(Dense(nb_fnn_filt))(doa)
         doa = Dropout(dropout_rate)(doa)
 
     doa = TimeDistributed(Dense(data_out[1][-1]))(doa)
@@ -55,4 +58,5 @@ def get_model(data_in, data_out, dropout_rate, nb_cnn2d_filt, pool_size,
     model.compile(optimizer=Adam(), loss=['binary_crossentropy', 'mse'], loss_weights=weights)
 
     model.summary()
+    plot_model(model, to_file='v01.png')
     return model

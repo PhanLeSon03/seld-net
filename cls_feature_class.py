@@ -23,7 +23,7 @@ class FeatureClass:
         elif dataset == 'resim':
             self._base_folder = os.path.join('/proj/asignal/TUT_SELD/', 'doa_data_echoic/')
         elif dataset == 'cansim':
-            self._base_folder = os.path.join('/proj/asignal/TUT_SELD/', 'doa_circdata/')
+            self._base_folder = os.path.join('D:\Dataset', 'doa_circdata')
         elif dataset == 'cresim':
             self._base_folder = os.path.join('/proj/asignal/TUT_SELD/', 'doa_circdata_echoic/')
         elif dataset == 'real':

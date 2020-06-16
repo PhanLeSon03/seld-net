@@ -8,11 +8,11 @@ def get_params(argv):
     print("SET: {}".format(argv))
     # ########### default parameters ##############
     params = dict(
-        quick_test=True,    # To do quick test. Trains/test on small subset of dataset
+        quick_test=False,    # To do quick test. Trains/test on small subset of dataset
         azi_only=True,      # Estimate Azimuth only
 
         # Dataset loading parameters
-        dataset='ansim',    # Dataset to use: ansim, resim, cansim, cresim, real, mansim or mreal
+        dataset='cansim',    # Dataset to use: ansim, resim, cansim, cresim, real, mansim or mreal
         overlap=1,         # maximum number of overlapping sound events [1, 2, 3]
         split=1,           # Cross validation split [1, 2, 3]
         db=30,             # SNR of sound events.
@@ -22,7 +22,7 @@ def get_params(argv):
         sequence_length=512,        # Feature sequence length
         batch_size=16,              # Batch size
         dropout_rate=0.0,           # Dropout rate, constant for all layers
-        nb_cnn2d_filt=64,           # Number of CNN nodes, constant for each layer
+        nb_cnn2d_filt=16,           # sop1hc:64 Number of CNN nodes, constant for each layer
         pool_size=[8, 8, 2],        # CNN pooling, length of list = number of CNN layers, list value = pooling per layer
         rnn_size=[128, 128],        # RNN contents, length of list = number of layers, list value = number of nodes
         fnn_size=[128],             # FNN contents, length of list = number of layers, list value = number of nodes

@@ -32,6 +32,7 @@ class DataGenerator(object):
         self._nb_frames_file = None     # Assuming number of frames in feat files are the same
         self._feat_len = None
         self._2_nb_ch = 2 * self._feat_cls.get_nb_channels()
+        self._2_nb_ch_merg = 2 #sop1hc
         self._label_len = None  # total length of label - DOA + SED
         self._doa_len = None    # DOA label length
         self._class_dict = self._feat_cls.get_classes()
@@ -67,7 +68,7 @@ class DataGenerator(object):
         )
 
     def get_data_sizes(self):
-        feat_shape = (self._batch_size, self._2_nb_ch, self._seq_len, self._feat_len)
+        feat_shape = (self._batch_size, self._2_nb_ch_merg, self._seq_len, self._feat_len) #sop1hc:self._2_nb_ch
         label_shape = [
             (self._batch_size, self._seq_len, self._nb_classes),
             (self._batch_size, self._seq_len, self._nb_classes*(2 if self._azi_only else 3))
@@ -171,8 +172,17 @@ class DataGenerator(object):
                         label[:, :, :self._nb_classes],  # SED labels
                         np.concatenate((x, y, z), -1)    # DOA Cartesian labels
                          ]
+                #sop1hc
+                shapeFeat = np.shape(feat)
+                feat_merg = np.zeros((shapeFeat[0], 2,shapeFeat[2],shapeFeat[3]))
+                for iBatch in range(shapeFeat[0]):
+                    for iFrame in range(shapeFeat[2]):
+                        for iF in range(shapeFeat[3]):
+                            feat_merg[iBatch, 0, iFrame, iF] = feat[iBatch,2*(iF % self._feat_cls.get_nb_channels()),iFrame,iF]
+                            feat_merg[iBatch, 1, iFrame, iF] = feat[iBatch,2*(iF % self._feat_cls.get_nb_channels()) + 1,iFrame,iF]
 
-                yield feat, label
+                #print(np.shape(feat_merg))
+                yield feat_merg, label #sop1hc: feat
 
     def _split_in_seqs(self, data):
         if len(data.shape) == 1:
